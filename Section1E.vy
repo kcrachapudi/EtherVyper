@@ -51,3 +51,12 @@ def add_person(name: String[100], fav_num: uint256):
 
     #3. Increment the index for the next person
     self.pindex = self.pindex + 1
+
+#WORKSHOP Testing on Metamask and Remix
+#This exercise demonstrates several fundamental concepts in smart contract development and interaction:
+#State Modification: Changing the data stored on the blockchain requires sending transactions that execute state-changing functions (like add_person).
+#Mappings: Vyper mappings provide a flexible way to store key-value data. They don't have a fixed size but allow accessing values via their keys (indices in this case).
+#Structs: Custom data types (Person) allow grouping related information, making the contract code more organized and readable.
+#Function Interaction: Using a development environment or library to call functions (add_person) on a deployed contract.
+#Index Management: Using a dedicated state variable (index) to control the insertion position within mappings, simulating array-like sequential addition.
+#Gas Costs: Remember that every state-changing transaction (like each call to add_person) consumes gas on a live blockchain network.
