@@ -29,34 +29,26 @@
   and remember that contracts themselves maintain an ETH balance.
 """
 
-# Define the required amount in Wei
-# 1 ETH = 10^9(1 Billion) Gwei
-# 1 Gwei = 10^9(1 Billion) wei
-# 1 ETH = 10^9 X 10^9 wei, 10^18 wei
+# Defining the interface directly in the contract file
+interface AggregatorV3Interface:
+    def decimals() -> uint8: view
+    def description() -> String[1000]: view
+    def version() -> uint256: view
+    # This is the function we need to call:
+    def latestAnswer() -> int256: view
 
-# 1 followed by 15 zeros, 0.001 ETH
-REQUIRED_AMOUNT: constant(uint256) = 1_000_000_000_000_000  # In wei
-
-test_num: public(uint256) # Made public for easy check in Remix
-
-#If a function lacks @payable, any attempt to send ETH to it results in transaction reversion.
-@payable
-@external
-def fund():
-    """
-    Allow users to send $ to this contract.
-    Accepts funds but requires 'REQUIRED_AMOUNT' to be sent.
-    """
-    self.test_num = self.test_num + 3
-
-    # Check if the received value matches the required amount
-    assert msg.value >= REQUIRED_AMOUNT, "Incorrect ETH amount sent"
-    #If the condition is false (the wrong amount was sent), the transaction reverts with the optional error message provided. The sent ETH (minus gas fees) is returned to the sender.
-    
-    #If assert passes, proceed with function logic...
-    #For example, log the funding event or update
-    pass 
+minimum_usd: public(uint256)
+price_feed_address: public(address) # Store the feed address
+ETH_USD_FEED_SEPOLIA: constant(address) = 0x694AA1769357215DE4FAC081bf1f309aDC325306
 
 @external
-def withdraw():
-    pass # Placeholder for withdrawal logic
+@view
+def get_price()->int256:
+    #Instantiate the external contract
+    # Pass the known Address as ana argument 
+    price_feed:AggregatorV3Interface = AggregatorV3Interface(ETH_USD_FEED_SEPOLIA)
+
+    # Call the External function using staticcall
+    # staticcall is used because latestAnswer() ia a view function 
+    return staticcall price_feed.latestAnswer()
+
