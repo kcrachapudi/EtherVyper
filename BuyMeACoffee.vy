@@ -30,8 +30,14 @@
 """
 
 # Define the required amount in Wei
+# 1 ETH = 10^9(1 Billion) Gwei
+# 1 Gwei = 10^9(1 Billion) wei
+# 1 ETH = 10^9 X 10^9 wei, 10^18 wei
+
 # 1 followed by 15 zeros, 0.001 ETH
-REQUIRED_AMOUNT: constant(uint256) = 1_000_000_000_000_000
+REQUIRED_AMOUNT: constant(uint256) = 1_000_000_000_000_000  # In wei
+
+test_num: public(uint256) # Made public for easy check in Remix
 
 #If a function lacks @payable, any attempt to send ETH to it results in transaction reversion.
 @payable
@@ -41,6 +47,8 @@ def fund():
     Allow users to send $ to this contract.
     Accepts funds but requires 'REQUIRED_AMOUNT' to be sent.
     """
+    self.test_num = self.test_num + 3
+
     # Check if the received value matches the required amount
     assert msg.value >= REQUIRED_AMOUNT, "Incorrect ETH amount sent"
     #If the condition is false (the wrong amount was sent), the transaction reverts with the optional error message provided. The sent ETH (minus gas fees) is returned to the sender.
